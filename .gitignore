@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.bun/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+web-build/
+
+# Expo / React Native
+.expo/
+*.jks
+*.p8
+*.spc
+*.key
+*.apk
+*.apks
+*.aab
+*.ipa
+*.plist
+android/app/build/
+ios/build/
+
+# IDE / System files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environments and Secrets
+.env
+.env.local
+.env.*.local
+.env.production
+*.pem
+
+# Database / Prisma / Drizzle
+prisma/.env
+*.db
+*.db-journal
+
+# Temporary / Cache
+.npm/
+.eslintcache
+.turbo/
