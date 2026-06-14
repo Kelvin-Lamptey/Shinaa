@@ -1,0 +1,79 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum StaffRole {
+  official
+  caretaker
+}
+
+enum ScheduleType {
+  recurring_class
+  one_time_event
+}
+
+model Room {
+  id        String     @id @default(uuid()) @db.Uuid
+  name      String     @unique
+  roomType  String     @map("room_type")
+  keys      Key[]
+  schedules Schedule[]
+
+  @@map("rooms")
+}
+
+model Key {
+  id          String   @id @default(uuid()) @db.Uuid
+  roomId      String   @map("room_id") @db.Uuid
+  room        Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  isAvailable Boolean  @default(true) @map("is_available")
+  lastUpdated DateTime @updatedAt @map("last_updated")
+  keyLogs     KeyLog[]
+
+  @@map("keys")
+}
+
+model StaffUser {
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  role         StaffRole
+  keyLogs      KeyLog[]
+
+  @@map("staff_users")
+}
+
+model KeyLog {
+  id          String    @id @default(uuid()) @db.Uuid
+  keyId       String    @map("key_id") @db.Uuid
+  key         Key       @relation(fields: [keyId], references: [id], onDelete: Cascade)
+  loggedBy    String    @map("logged_by") @db.Uuid
+  staffUser   StaffUser @relation(fields: [loggedBy], references: [id], onDelete: Restrict)
+  studentName String    @map("student_name")
+  studentId   String    @map("student_id")
+  phoneNumber String    @map("phone_number")
+  timeOut     DateTime  @default(now()) @map("time_out")
+  timeIn      DateTime? @map("time_in")
+
+  @@map("key_logs")
+}
+
+model Schedule {
+  id           String       @id @default(uuid()) @db.Uuid
+  roomId       String       @map("room_id") @db.Uuid
+  room         Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  title        String
+  scheduleType ScheduleType @map("schedule_type")
+  dayOfWeek    Int?         @map("day_of_week")
+  specificDate DateTime?    @map("specific_date") @db.Date
+  startTime    String       @map("start_time") @db.VarChar(5) // Format: HH:MM
+  endTime      String       @map("end_time") @db.VarChar(5)   // Format: HH:MM
+
+  @@map("schedules")
+}

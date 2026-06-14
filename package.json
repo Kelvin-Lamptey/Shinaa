@@ -1,0 +1,11 @@
+{
+  "name": "shinaa-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
