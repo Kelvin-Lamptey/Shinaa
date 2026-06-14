@@ -1,11 +1,19 @@
 {
-  "name": "shinaa-monorepo",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "devDependencies": {
-    "typescript": "^5.4.5"
+    "name": "shinaa-monorepo",
+    "private": true,
+    "workspaces": [
+      "apps/*",
+      "packages/*"
+    ],
+    "scripts": {
+      "db:up": "docker compose up -d",
+      "db:down": "docker compose down",
+      "db:push": "bun --filter @shinaa/database prisma db push",
+      "db:seed": "bun --filter @shinaa/database prisma db seed",
+      "dev": "concurrently \"bun --filter @shinaa/api dev\" \"bun --filter @shinaa/web-dashboard dev\" \"bun --filter @shinaa/mobile-app start\""
+    },
+    "devDependencies": {
+      "concurrently": "^8.2.2",
+      "typescript": "^5.4.5"
+    }
   }
-}
