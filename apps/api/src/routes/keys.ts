@@ -36,31 +36,21 @@ router.post("/:id/checkout", async (req: AuthenticatedRequest, res: Response) =>
       return res.status(404).json({ error: "Key not found" });
     }
 
-    if (!key.isAvailable) {
-      return res.status(400).json({ error: "Key is already checked out" });
-    }
-
-    // Perform transaction: update key availability and create log record
-    const [updatedKey, log] = await prisma.$transaction([
-      prisma.key.update({
-        where: { id: keyId },
-        data: { isAvailable: false },
-      }),
-      prisma.keyLog.create({
-        data: {
-          keyId,
-          loggedBy,
-          studentName,
-          studentId,
-          phoneNumber,
-          timeOut: new Date(),
-        },
-      }),
-    ]);
+    // Create log record (no longer updates isAvailable)
+    const log = await prisma.keyLog.create({
+      data: {
+        keyId,
+        loggedBy,
+        studentName,
+        studentId,
+        phoneNumber,
+        timeOut: new Date(),
+      },
+    });
 
     return res.json({
       message: "Key checked out successfully",
-      key: updatedKey,
+      key,
       log,
     });
   } catch (error) {
@@ -82,11 +72,14 @@ router.post("/:id/return", async (req: AuthenticatedRequest, res: Response) => {
       return res.status(404).json({ error: "Key not found" });
     }
 
-    // Find the active open log for this key
+    // Find the active open log for this key (most recent first)
     const activeLog = await prisma.keyLog.findFirst({
       where: {
         keyId,
         timeIn: null,
+      },
+      orderBy: {
+        timeOut: "desc",
       },
     });
 
@@ -94,21 +87,15 @@ router.post("/:id/return", async (req: AuthenticatedRequest, res: Response) => {
       return res.status(400).json({ error: "No active checkout log found for this key" });
     }
 
-    // Perform transaction: update key availability and update active log
-    const [updatedKey, log] = await prisma.$transaction([
-      prisma.key.update({
-        where: { id: keyId },
-        data: { isAvailable: true },
-      }),
-      prisma.keyLog.update({
-        where: { id: activeLog.id },
-        data: { timeIn: new Date() },
-      }),
-    ]);
+    // Update active log to record key return
+    const log = await prisma.keyLog.update({
+      where: { id: activeLog.id },
+      data: { timeIn: new Date() },
+    });
 
     return res.json({
       message: "Key returned successfully",
-      key: updatedKey,
+      key,
       log,
     });
   } catch (error) {

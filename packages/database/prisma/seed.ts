@@ -55,7 +55,6 @@ async function main() {
     const key = await prisma.key.create({
       data: {
         roomId: room.id,
-        isAvailable: true,
       },
     });
 

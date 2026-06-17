@@ -10,6 +10,7 @@ generator client {
 enum StaffRole {
   official
   caretaker
+  super_admin
 }
 
 enum ScheduleType {
@@ -31,7 +32,6 @@ model Key {
   id          String   @id @default(uuid()) @db.Uuid
   roomId      String   @map("room_id") @db.Uuid
   room        Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  isAvailable Boolean  @default(true) @map("is_available")
   lastUpdated DateTime @updatedAt @map("last_updated")
   keyLogs     KeyLog[]
 

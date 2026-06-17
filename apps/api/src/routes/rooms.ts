@@ -52,7 +52,6 @@ router.get("/availability", async (req: Request, res: Response) => {
         keys: {
           select: {
             id: true,
-            isAvailable: true,
             lastUpdated: true,
             keyLogs: {
               where: {
@@ -87,6 +86,7 @@ router.get("/availability", async (req: Request, res: Response) => {
     const result = rooms.map((room) => {
       const roomKey = room.keys[0] || null;
       const activeLog = roomKey?.keyLogs?.[0] || null;
+      const isKeyAvailable = roomKey ? roomKey.keyLogs.length === 0 : false;
       
       // Check for time intersections among the room's schedules for this day
       // Conflict formula: Requested_Start_Time < Existing_End_Time AND Requested_End_Time > Existing_Start_Time
@@ -102,11 +102,11 @@ router.get("/availability", async (req: Request, res: Response) => {
         roomType: room.roomType,
         key: roomKey ? {
           id: roomKey.id,
-          isAvailable: roomKey.isAvailable,
+          isAvailable: isKeyAvailable,
           lastUpdated: roomKey.lastUpdated,
           activeLog: activeLog,
         } : null,
-        isKeyAvailable: roomKey ? roomKey.isAvailable : false,
+        isKeyAvailable,
         prediction: {
           status: isOccupied ? "Occupied" : "Vacant",
           reason: conflictSchedule ? conflictSchedule.title : null,

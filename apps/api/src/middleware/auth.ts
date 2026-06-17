@@ -7,7 +7,7 @@ export interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
     email: string;
-    role: "official" | "caretaker";
+    role: "official" | "caretaker" | "super_admin";
     name: string;
   };
 }
@@ -34,7 +34,7 @@ export function authenticateJWT(req: AuthenticatedRequest, res: Response, next: 
   }
 }
 
-export function requireRole(roles: Array<"official" | "caretaker">) {
+export function requireRole(roles: Array<"official" | "caretaker" | "super_admin">) {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ error: "Authentication required" });

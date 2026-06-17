@@ -120,3 +120,7 @@ export const AvailabilityQuerySchema = z.object({
   }
 );
 export type AvailabilityQueryInput = z.infer<typeof AvailabilityQuerySchema>;
+
+// Staff User Roles
+export const StaffRoleEnum = z.enum(["official", "caretaker", "super_admin"]);
+export type StaffRole = z.infer<typeof StaffRoleEnum>;
