@@ -1,9 +1,15 @@
 [
   {
+    "id": "shinaa-test-dev",
+    "name": "Shinaa Live Test Development Server",
+    "aliases": ["Live", "Dev", "Test"],
+    "server_url": "https://shinaa.onrender.com"
+  },
+  {
     "id": "shinaa-local-dev",
-    "name": "Shinaa Local Development Server",
+    "name": "Shinaa Local Test Development Server",
     "aliases": ["Localhost", "Dev", "Test"],
-    "server_url": "http://10.0.2.2:3000"
+    "server_url": "localhost:3000"
   },
   {
     "id": "gctu",
