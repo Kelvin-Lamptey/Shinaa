@@ -13,7 +13,7 @@ export type CreateRoomInput = z.infer<typeof CreateRoomSchema>;
 // Key Checkout Validation
 export const KeyCheckoutSchema = z.object({
   studentName: z.string().min(2, "Student name must be at least 2 characters").max(100),
-  studentId: z.string().min(3, "Student ID must be at least 3 characters").max(50),
+  studentId: z.string().max(50).optional().transform(val => val ?? ""),
   phoneNumber: z.string().regex(/^\+?[1-9]\d{1,14}$|^[0-9]{7,15}$/, "Invalid phone number format"),
 });
 export type KeyCheckoutInput = z.infer<typeof KeyCheckoutSchema>;

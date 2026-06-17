@@ -341,12 +341,11 @@ export default function CaretakerWorkspace({ token }: CaretakerWorkspaceProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor="student-id" className="text-xs font-semibold text-[#1F2328]">
-                      Student ID
+                      Student ID (Optional)
                     </label>
                     <input
                       id="student-id"
                       type="text"
-                      required
                       value={studentId}
                       onChange={(e) => setStudentId(e.target.value)}
                       className="border border-[#D0D7DE] rounded-md px-3 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-[#0969DA] focus:border-transparent shadow-sm bg-white"

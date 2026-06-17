@@ -176,8 +176,8 @@ export default function MobileCaretakerWorkspace() {
       return;
     }
 
-    if (!studentName || !studentId || !phoneNumber) {
-      setCheckoutError("Please fill in all checkout fields");
+    if (!studentName || !phoneNumber) {
+      setCheckoutError("Please fill in the required checkout fields");
       return;
     }
 
@@ -429,7 +429,7 @@ export default function MobileCaretakerWorkspace() {
               <View style={styles.formRow}>
                 <TextInput
                   style={[styles.formInput, { flex: 1, marginRight: 8 }]}
-                  placeholder="Student ID"
+                  placeholder="Student ID (Optional)"
                   placeholderTextColor="#656D76"
                   value={studentId}
                   onChangeText={setStudentId}
