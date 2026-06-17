@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { prisma } from "@shinaa/database";
 import { AvailabilityQuerySchema, AvailabilityQueryInput } from "@shinaa/shared-types";
+import { authenticateJWT, requireRole, AuthenticatedRequest } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -176,6 +177,123 @@ router.get("/:id/peek", async (req: Request, res: Response) => {
     return res.json(upcomingSchedules);
   } catch (error) {
     console.error("Peek room schedules error:", error);
+    return res.status(500).json({ error: "An internal server error occurred" });
+  }
+});
+
+// GET /api/rooms - List all rooms with keys
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const rooms = await prisma.room.findMany({
+      include: {
+        keys: {
+          select: {
+            id: true,
+            keyLogs: {
+              where: { timeIn: null },
+              select: {
+                id: true,
+                studentName: true,
+                studentId: true,
+                phoneNumber: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+    return res.json(rooms);
+  } catch (error) {
+    console.error("List rooms error:", error);
+    return res.status(500).json({ error: "An internal server error occurred" });
+  }
+});
+
+// POST /api/rooms - Add a new room (Requires official)
+router.post("/", authenticateJWT, requireRole(["official"]), async (req: AuthenticatedRequest, res: Response) => {
+  const { name, roomType } = req.body;
+
+  if (!name || !roomType) {
+    return res.status(400).json({ error: "Room name and roomType are required" });
+  }
+
+  try {
+    const existingRoom = await prisma.room.findUnique({
+      where: { name },
+    });
+
+    if (existingRoom) {
+      return res.status(400).json({ error: "Room with this name already exists" });
+    }
+
+    const room = await prisma.room.create({
+      data: {
+        name,
+        roomType,
+      },
+    });
+
+    // Automatically create the associated Key
+    const key = await prisma.key.create({
+      data: {
+        roomId: room.id,
+      },
+    });
+
+    return res.status(201).json({ room, key });
+  } catch (error) {
+    console.error("Create room error:", error);
+    return res.status(500).json({ error: "An internal server error occurred" });
+  }
+});
+
+// PATCH /api/rooms/:id - Edit room name (Requires official)
+router.patch("/:id", authenticateJWT, requireRole(["official"]), async (req: AuthenticatedRequest, res: Response) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ error: "Room name is required" });
+  }
+
+  try {
+    const existingRoom = await prisma.room.findUnique({
+      where: { name },
+    });
+
+    if (existingRoom && existingRoom.id !== id) {
+      return res.status(400).json({ error: "Room name is already taken by another room" });
+    }
+
+    const updatedRoom = await prisma.room.update({
+      where: { id },
+      data: {
+        name,
+      },
+    });
+
+    return res.json(updatedRoom);
+  } catch (error) {
+    console.error("Update room error:", error);
+    return res.status(500).json({ error: "An internal server error occurred" });
+  }
+});
+
+// DELETE /api/rooms/:id - Delete a room (Requires official)
+router.delete("/:id", authenticateJWT, requireRole(["official"]), async (req: AuthenticatedRequest, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    await prisma.room.delete({
+      where: { id },
+    });
+
+    return res.json({ message: "Room deleted successfully" });
+  } catch (error) {
+    console.error("Delete room error:", error);
     return res.status(500).json({ error: "An internal server error occurred" });
   }
 });

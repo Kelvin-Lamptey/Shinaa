@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.js";
 import keysRouter from "./routes/keys.js";
 import schedulesRouter from "./routes/schedules.js";
 import roomsRouter from "./routes/rooms.js";
+import adminRouter from "./routes/admin.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +22,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/keys", keysRouter);
 app.use("/api/schedules", schedulesRouter);
 app.use("/api/rooms", roomsRouter);
+app.use("/api/admin", adminRouter);
 
 // Global Error Handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

@@ -171,4 +171,59 @@ router.post("/event", async (req: AuthenticatedRequest, res: Response) => {
   }
 });
 
+// GET /api/schedules - List all schedules (timetables and one-off events)
+router.get("/", async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const schedules = await prisma.schedule.findMany({
+      include: {
+        room: {
+          select: {
+            name: true,
+            roomType: true,
+          },
+        },
+      },
+      orderBy: [
+        {
+          scheduleType: "asc",
+        },
+        {
+          dayOfWeek: "asc",
+        },
+        {
+          startTime: "asc",
+        },
+      ],
+    });
+    return res.json(schedules);
+  } catch (error) {
+    console.error("List schedules error:", error);
+    return res.status(500).json({ error: "An internal server error occurred" });
+  }
+});
+
+// DELETE /api/schedules/:id - Delete a schedule (timetables and one-off events)
+router.delete("/:id", async (req: AuthenticatedRequest, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const schedule = await prisma.schedule.findUnique({
+      where: { id },
+    });
+
+    if (!schedule) {
+      return res.status(404).json({ error: "Schedule not found" });
+    }
+
+    await prisma.schedule.delete({
+      where: { id },
+    });
+
+    return res.json({ message: "Schedule deleted successfully" });
+  } catch (error) {
+    console.error("Delete schedule error:", error);
+    return res.status(500).json({ error: "An internal server error occurred" });
+  }
+});
+
 export default router;

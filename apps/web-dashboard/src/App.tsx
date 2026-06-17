@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import Login from "./components/Login.tsx";
 import CaretakerWorkspace from "./components/CaretakerWorkspace.tsx";
 import OfficialWorkspace from "./components/OfficialWorkspace.tsx";
+import AdminWorkspace from "./components/AdminWorkspace.tsx";
 
 interface TokenPayload {
   id: string;
   email: string;
-  role: "official" | "caretaker";
+  role: "official" | "caretaker" | "super_admin";
   name: string;
   exp: number;
 }
@@ -31,6 +32,15 @@ function decodeToken(token: string): TokenPayload | null {
 export default function App() {
   const [token, setToken] = useState<string | null>(localStorage.getItem("shinaa_token"));
   const [user, setUser] = useState<TokenPayload | null>(null);
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener("popstate", handleLocationChange);
+    return () => window.removeEventListener("popstate", handleLocationChange);
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -46,6 +56,21 @@ export default function App() {
       setUser(null);
     }
   }, [token]);
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "super_admin" && currentPath !== "/admin") {
+        window.history.replaceState(null, "", "/admin");
+        setCurrentPath("/admin");
+      } else if (user.role === "official" && currentPath !== "/official") {
+        window.history.replaceState(null, "", "/official");
+        setCurrentPath("/official");
+      } else if (user.role === "caretaker" && currentPath !== "/") {
+        window.history.replaceState(null, "", "/");
+        setCurrentPath("/");
+      }
+    }
+  }, [user, currentPath]);
 
   const handleLogin = (newToken: string) => {
     localStorage.setItem("shinaa_token", newToken);
@@ -69,7 +94,7 @@ export default function App() {
         <div className="flex items-center gap-3">
           <span className="font-semibold text-lg text-[#1F2328]">Shinaa</span>
           <span className="text-xs px-2 py-0.5 border border-[#D0D7DE] rounded-full text-[#656D76] bg-[#F6F8FA] font-medium capitalize">
-            {user.role} Dashboard
+            {user.role === "super_admin" ? "Super Admin" : user.role} Dashboard
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -79,19 +104,23 @@ export default function App() {
           </div>
           <button
             onClick={handleLogout}
-            className="bg-[#F6F8FA] border border-[#D0D7DE] text-[#24292F] px-3 py-1.5 rounded-md text-xs font-medium hover:bg-[#F3F4F6] transition-colors"
+            className="bg-[#F6F8FA] border border-[#D0D7DE] text-[#24292F] px-3 py-1.5 rounded-md text-xs font-medium hover:bg-[#F3F4F6] transition-colors cursor-pointer"
           >
             Sign out
           </button>
         </div>
       </header>
 
-      {/* Workspace view router based on user role */}
+      {/* Workspace view router based on user role and path */}
       <main className="flex-1 p-6 max-w-7xl w-full mx-auto">
-        {user.role === "official" ? (
+        {user.role === "super_admin" && currentPath === "/admin" ? (
+          <AdminWorkspace token={token} />
+        ) : user.role === "official" && currentPath === "/official" ? (
           <OfficialWorkspace token={token} />
-        ) : (
+        ) : user.role === "caretaker" && currentPath === "/" ? (
           <CaretakerWorkspace token={token} />
+        ) : (
+          <div className="text-center py-12 text-[#656D76]">Redirecting to authorized workspace...</div>
         )}
       </main>
     </div>
