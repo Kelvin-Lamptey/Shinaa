@@ -49,12 +49,8 @@ export default function RootLayout() {
     setDiscoveryLoading(true);
     setDiscoveryError(null);
     try {
-      // Point to Vite server running on port 5173
-      const devServerHost = Platform.select({
-        android: "10.0.2.2:5173",
-        default: "localhost:5173",
-      });
-      const response = await fetch(`http://${devServerHost}/directory.json`);
+      // Fetch school phonebook directory from live production GitHub Pages URL
+      const response = await fetch("https://kelvin-lamptey.github.io/Shinaa/apps/web-dashboard/public/directory.json");
       if (!response.ok) {
         throw new Error("Unable to retrieve campus directory");
       }
