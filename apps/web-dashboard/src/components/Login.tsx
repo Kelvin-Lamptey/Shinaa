@@ -1,4 +1,5 @@
 import { useState, FormEvent } from "react";
+import { API_URL } from "../config";
 
 interface LoginProps {
   onLoginSuccess: (token: string) => void;
@@ -16,7 +17,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

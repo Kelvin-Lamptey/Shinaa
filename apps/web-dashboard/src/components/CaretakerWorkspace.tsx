@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, FormEvent } from "react";
+import { API_URL } from "../config";
 import RoomCard, { RoomData } from "./RoomCard.tsx";
 import { Search, X, UserCheck, Smartphone, Hash } from "lucide-react";
 
@@ -26,7 +27,7 @@ export default function CaretakerWorkspace({ token }: CaretakerWorkspaceProps) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/rooms");
+      const response = await fetch(`${API_URL}/api/rooms`);
       if (!response.ok) {
         throw new Error("Failed to load room statuses");
       }
@@ -41,7 +42,7 @@ export default function CaretakerWorkspace({ token }: CaretakerWorkspaceProps) {
 
   const refreshRoomsAndSelect = async (currentSelectedId?: string) => {
     try {
-      const response = await fetch("/api/rooms");
+      const response = await fetch(`${API_URL}/api/rooms`);
       if (response.ok) {
         const data = await response.json();
         setRooms(data);
@@ -95,7 +96,7 @@ export default function CaretakerWorkspace({ token }: CaretakerWorkspaceProps) {
     setCheckoutError(null);
 
     try {
-      const response = await fetch(`/api/keys/${keyId}/checkout`, {
+      const response = await fetch(`${API_URL}/api/keys/${keyId}/checkout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +136,7 @@ export default function CaretakerWorkspace({ token }: CaretakerWorkspaceProps) {
     if (!keyId) return;
 
     try {
-      const response = await fetch(`/api/keys/${keyId}/return`, {
+      const response = await fetch(`${API_URL}/api/keys/${keyId}/return`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

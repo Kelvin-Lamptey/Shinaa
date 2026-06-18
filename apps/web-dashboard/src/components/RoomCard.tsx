@@ -1,4 +1,5 @@
 import { useState, MouseEvent } from "react";
+import { API_URL } from "../config";
 import { Eye, CalendarDays, X } from "lucide-react";
 
 export interface ActiveLog {
@@ -54,7 +55,7 @@ export default function RoomCard({ room, isReadOnly, onCardClick }: RoomCardProp
     setPeekError(null);
 
     try {
-      const response = await fetch(`/api/rooms/${room.id}/peek`);
+      const response = await fetch(`${API_URL}/api/rooms/${room.id}/peek`);
       if (!response.ok) {
         throw new Error("Failed to load upcoming slots");
       }

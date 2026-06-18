@@ -1,4 +1,5 @@
 import { useState, useEffect, DragEvent, ChangeEvent, FormEvent } from "react";
+import { API_URL } from "../config";
 import {
   School,
   Calendar,
@@ -106,7 +107,7 @@ export default function OfficialWorkspace({ token }: OfficialWorkspaceProps) {
   // API calls
   const fetchRooms = async () => {
     try {
-      const response = await fetch("/api/rooms");
+      const response = await fetch(`${API_URL}/api/rooms`);
       if (response.ok) {
         const data = await response.json();
         setRooms(data);
@@ -118,7 +119,7 @@ export default function OfficialWorkspace({ token }: OfficialWorkspaceProps) {
 
   const fetchSchedules = async () => {
     try {
-      const response = await fetch("/api/schedules", {
+      const response = await fetch(`${API_URL}/api/schedules`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -158,7 +159,7 @@ export default function OfficialWorkspace({ token }: OfficialWorkspaceProps) {
     }
 
     try {
-      const response = await fetch("/api/rooms", {
+      const response = await fetch(`${API_URL}/api/rooms`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -197,7 +198,7 @@ export default function OfficialWorkspace({ token }: OfficialWorkspaceProps) {
     if (!editingRoomName.trim()) return;
 
     try {
-      const response = await fetch(`/api/rooms/${roomId}`, {
+      const response = await fetch(`${API_URL}/api/rooms/${roomId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -225,7 +226,7 @@ export default function OfficialWorkspace({ token }: OfficialWorkspaceProps) {
     if (!confirm("Are you sure you want to delete this room? This will also delete all associated keys and schedules.")) return;
 
     try {
-      const response = await fetch(`/api/rooms/${roomId}`, {
+      const response = await fetch(`${API_URL}/api/rooms/${roomId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -275,7 +276,7 @@ export default function OfficialWorkspace({ token }: OfficialWorkspaceProps) {
     formData.append("file", file);
 
     try {
-      const response = await fetch("/api/schedules/upload-csv", {
+      const response = await fetch(`${API_URL}/api/schedules/upload-csv`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -328,7 +329,7 @@ export default function OfficialWorkspace({ token }: OfficialWorkspaceProps) {
     if (!confirm("Are you sure you want to cancel and delete this schedule?")) return;
 
     try {
-      const response = await fetch(`/api/schedules/${scheduleId}`, {
+      const response = await fetch(`${API_URL}/api/schedules/${scheduleId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -359,7 +360,7 @@ export default function OfficialWorkspace({ token }: OfficialWorkspaceProps) {
     }
 
     try {
-      const response = await fetch("/api/schedules/event", {
+      const response = await fetch(`${API_URL}/api/schedules/event`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

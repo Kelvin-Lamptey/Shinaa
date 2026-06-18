@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_URL } from "../config";
 import RoomCard, { RoomData } from "./RoomCard.tsx";
 import { Search } from "lucide-react";
 
@@ -12,7 +13,7 @@ export default function PublicWorkspace() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/rooms");
+      const response = await fetch(`${API_URL}/api/rooms`);
       if (!response.ok) {
         throw new Error("Failed to load room catalog");
       }

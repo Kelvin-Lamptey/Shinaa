@@ -1,4 +1,5 @@
 import { useState, useEffect, FormEvent } from "react";
+import { API_URL } from "../config";
 
 interface AdminWorkspaceProps {
   token: string;
@@ -29,7 +30,7 @@ export default function AdminWorkspace({ token }: AdminWorkspaceProps) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/admin/staff", {
+      const response = await fetch(`${API_URL}/api/admin/staff`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -66,7 +67,7 @@ export default function AdminWorkspace({ token }: AdminWorkspaceProps) {
     }
 
     try {
-      const response = await fetch("/api/admin/staff", {
+      const response = await fetch(`${API_URL}/api/admin/staff`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
