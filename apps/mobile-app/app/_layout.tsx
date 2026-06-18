@@ -50,7 +50,7 @@ export default function RootLayout() {
     setDiscoveryError(null);
     try {
       // Fetch school phonebook directory from live production GitHub Pages URL
-      const response = await fetch("https://kelvin-lamptey.github.io/Shinaa/apps/web-dashboard/public/directory.json");
+      const response = await fetch("https://kenoltechcompany.github.io/Shinaa/apps/web-dashboard/public/directory.json");
       if (!response.ok) {
         throw new Error("Unable to retrieve campus directory");
       }

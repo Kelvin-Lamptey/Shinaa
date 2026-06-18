@@ -1,7 +1,7 @@
 # Shinaa 🗝️🗓️
 
 ### An enterprise-grade, federated campus key and schedule tracking platform.
-***Proudly built and maintained by [KENOL Tech Company](https://github.com/orgs/KENOL-Tech-Company/dashboard).***
+***Proudly built and maintained by [KENOL Tech Company](https://kenol.tech).***
 
 ---
 
@@ -62,7 +62,7 @@ Get a fully functioning local developer environment running in under three minut
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Kelvin-Lamptey/Shinaa.git
+git clone https://github.com/kenoltechcompany/Shinaa
 cd Shinaa
 ```
 
