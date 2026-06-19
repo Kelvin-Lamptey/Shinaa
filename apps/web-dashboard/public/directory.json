@@ -3,18 +3,12 @@
     "id": "shinaa-test-dev",
     "name": "Shinaa Live Test Development Server",
     "aliases": ["Live", "Dev", "Test"],
-    "server_url": "https://shinaa.onrender.com"
+    "server_url": "shinaa-backend.azurewebsites.net"
   },
   {
     "id": "shinaa-local-dev",
     "name": "Shinaa Local Test Development Server",
     "aliases": ["Localhost", "Dev", "Test"],
     "server_url": "localhost:3000"
-  },
-  {
-    "id": "gctu",
-    "name": "Ghana Communication Technology University",
-    "aliases": ["GCTU", "Ghana Telecom"],
-    "server_url": "https://shinaa.gctu.edu.gh"
   }
 ]
