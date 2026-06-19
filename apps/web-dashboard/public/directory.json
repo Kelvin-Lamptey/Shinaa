@@ -6,6 +6,12 @@
     "server_url": "shinaa-backend.azurewebsites.net"
   },
   {
+    "id": "shinaa-test-dev-2",
+    "name": "Shinaa Live Test Development Server",
+    "aliases": ["Live", "Dev", "Test"],
+    "server_url": "shinaa.onrender.com"
+  },
+  {
     "id": "shinaa-local-dev",
     "name": "Shinaa Local Test Development Server",
     "aliases": ["Localhost", "Dev", "Test"],
